@@ -21,10 +21,15 @@ export function betterAuthSessionMiddleware(auth: Auth) {
       } else {
         c.set("user", null);
         c.set("session", null);
+        return c.json(
+          { message: "Unauthorized! Please provide a valid token" },
+          401
+        );
       }
     } catch {
       c.set("user", null);
       c.set("session", null);
+      return c.json({ error: "Internal Server Error" }, 500);
     }
 
     await next();
@@ -33,9 +38,9 @@ export function betterAuthSessionMiddleware(auth: Auth) {
 
 export const UnauthorizedSchema = z
   .object({
-    message: z.enum(["No token provided", "Invalid token"]),
+    message: z.literal("Unauthorized! Please provide a valid token"),
   })
   .openapi({
     description: "Unauthorized Response",
-    example: { message: "No token provided" },
+    example: { message: "Unauthorized! Please provide a valid token" },
   });
