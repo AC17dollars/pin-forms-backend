@@ -98,7 +98,7 @@ app.get(
         title: "Auth Docs",
       },
     ],
-  }),
+  })
 );
 
 // Connect to database
@@ -128,7 +128,7 @@ serve(
     localIP.ipv6.forEach((ip) => {
       cLogger.info(`🌐 Server @\x1b[34mhttp://[${ip}]:${info.port}\x1b[0m`);
     });
-  },
+  }
 );
 
 // Shutdown gracefully

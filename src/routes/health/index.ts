@@ -40,7 +40,7 @@ app.openapi(healthAuthRoute, async (c) => {
       database: dbStatus,
       authorization: "ok" as const,
     },
-    200,
+    200
   );
 });
 

@@ -26,21 +26,21 @@ export const cLogger = {
   info: (...msg: unknown[]) => {
     console.info(
       `${colors.blue}[INFO ]${colors.reset} ${colors.grey}${timestamp()}${colors.reset} —`,
-      ...msg,
+      ...msg
     );
   },
 
   warn: (...msg: unknown[]) => {
     console.warn(
       `${colors.yellow}[WARN ]${colors.reset} ${colors.grey}${timestamp()}${colors.reset} —`,
-      ...msg,
+      ...msg
     );
   },
 
   error: (...msg: unknown[]) => {
     console.error(
       `${colors.red}[ERROR]${colors.reset} ${colors.grey}${timestamp()}${colors.reset} —`,
-      ...msg,
+      ...msg
     );
   },
 
@@ -48,7 +48,7 @@ export const cLogger = {
     if (isProd) return;
     console.debug(
       `${colors.grey}[DEBUG]${colors.reset} ${colors.grey}${timestamp()}${colors.reset} —`,
-      ...msg,
+      ...msg
     );
   },
 
@@ -56,7 +56,7 @@ export const cLogger = {
     console.log(
       `${colors.green}[ LOG ]${colors.reset} ${colors.grey}${timestamp()}${colors.reset} —`,
       message,
-      ...rest,
+      ...rest
     );
   },
 };

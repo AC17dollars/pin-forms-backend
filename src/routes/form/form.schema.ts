@@ -6,7 +6,7 @@ const coerceLatitude = z.preprocess(
   z
     .number()
     .min(-90, { message: "Latitude must be >= -90" })
-    .max(90, { message: "Latitude must be <= 90" }),
+    .max(90, { message: "Latitude must be <= 90" })
 );
 
 const coerceLongitude = z.preprocess(
@@ -14,7 +14,7 @@ const coerceLongitude = z.preprocess(
   z
     .number()
     .min(-180, { message: "Longitude must be >= -180" })
-    .max(180, { message: "Longitude must be <= 180" }),
+    .max(180, { message: "Longitude must be <= 180" })
 );
 
 const fixedFormFieldsShape = {
@@ -50,7 +50,7 @@ export const createDynamicSchema = (
     type: z.infer<typeof FieldTypeEnum>;
     required: boolean;
     description?: string;
-  }[],
+  }[]
 ) => {
   const shape: Record<string, z.ZodType<unknown>> = {};
   for (const field of fields) {

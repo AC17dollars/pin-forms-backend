@@ -21,7 +21,7 @@ try {
   if (err instanceof z.ZodError) {
     console.error(
       "❌ Invalid environment variables:",
-      JSON.stringify(z.treeifyError(err), null, 2),
+      JSON.stringify(z.treeifyError(err), null, 2)
     );
     process.exit(1);
   }

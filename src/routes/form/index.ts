@@ -40,7 +40,7 @@ app.openapi(createFormRoute, async (c) => {
         error: "ValidationError",
         issues: validationResult.error.issues,
       },
-      400,
+      400
     );
   }
 
