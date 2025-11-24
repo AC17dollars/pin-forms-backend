@@ -73,6 +73,7 @@ export const TemplateResponseSchema = z
   .object({
     id: z.string(),
     name: z.string(),
+    description: z.string().optional(),
     markerIcon: z.string(),
 
     fixedFields: z.array(FixedFieldSchema),

@@ -17,9 +17,10 @@ const fixedPlaceField = {
 app.openapi(createTemplateRoute, async (c) => {
   const data = c.req.valid("json");
 
-  const newTemplate = {
+  const newTemplate: Omit<z.infer<typeof TemplateResponseSchema>, "id"> = {
     name: data.name,
     markerIcon: data.markerIcon,
+    description: data.description,
     fixedFields: [fixedPlaceField],
     dynamicFields: data.fields,
     createdAt: new Date().toISOString(),
