@@ -3,6 +3,7 @@ import {
   CreateTemplateSchema,
   TemplateListSchema,
   TemplateResponseSchema,
+  DeleteTemplateParamSchema,
 } from "./template.schema.js";
 
 import {
@@ -96,6 +97,48 @@ export const listTemplatesRoute = createRoute({
       content: {
         "application/json": {
           schema: UnauthorizedSchema,
+        },
+      },
+    },
+    500: {
+      description: "Internal Server Error",
+      content: {
+        "application/json": {
+          schema: InternalServerErrorSchema,
+        },
+      },
+    },
+  },
+});
+
+export const deleteTemplateRoute = createRoute({
+  tags: ["Templates"],
+  method: "delete",
+  path: "/{id}",
+  summary: "Delete a Template",
+  description: "Delete a template by ID.",
+  middleware: [betterAuthSessionMiddleware(auth)] as const,
+  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  request: {
+    params: DeleteTemplateParamSchema,
+  },
+  responses: {
+    204: {
+      description: "Template deleted successfully",
+    },
+    401: {
+      description: "Unauthorized",
+      content: {
+        "application/json": {
+          schema: UnauthorizedSchema,
+        },
+      },
+    },
+    404: {
+      description: "Template not found",
+      content: {
+        "application/json": {
+          schema: InternalServerErrorSchema,
         },
       },
     },

@@ -1,5 +1,10 @@
 import { OpenAPIHono, z } from "@hono/zod-openapi";
-import { createTemplateRoute, listTemplatesRoute } from "./template.route.js";
+import {
+  createTemplateRoute,
+  listTemplatesRoute,
+  deleteTemplateRoute,
+} from "./template.route.js";
+
 import { TemplateResponseSchema } from "./template.schema.js";
 
 import { db } from "@/db/mongo.js";
@@ -50,6 +55,25 @@ app.openapi(listTemplatesRoute, async (c) => {
     return c.json(result, 200);
   } catch (_error) {
     return c.json({ error: "Failed to list templates" }, 500);
+  }
+});
+
+app.openapi(deleteTemplateRoute, async (c) => {
+  const { id } = c.req.valid("param");
+
+  try {
+    const { ObjectId } = await import("mongodb");
+    const result = await db
+      .collection("templates")
+      .deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return c.json({ error: "Template not found" }, 404);
+    }
+
+    return c.body(null, 204);
+  } catch (_error) {
+    return c.json({ error: "Failed to delete template" }, 500);
   }
 });
 

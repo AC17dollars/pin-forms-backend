@@ -86,3 +86,7 @@ export const TemplateResponseSchema = z
   .openapi("TemplateResponseSchema");
 
 export const TemplateListSchema = z.array(TemplateResponseSchema);
+
+export const DeleteTemplateParamSchema = z.object({
+  id: z.string().openapi({ param: { name: "id", in: "path" } }),
+});

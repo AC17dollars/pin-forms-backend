@@ -100,3 +100,19 @@ export const FormResponseSchema = z
   .openapi("FormResponseSchema");
 
 export const FormListSchema = z.array(FormResponseSchema);
+
+export const DeleteFormParamSchema = z.object({
+  id: z.string().openapi({ param: { name: "id", in: "path" } }),
+});
+
+export const UpdateFormSchema = z
+  .object({
+    ...fixedFormFieldsShape,
+  })
+  .loose()
+  .openapi("UpdateFormSchema", {
+    example: {
+      "place.lat": 51.5074,
+      "place.lng": -0.1278,
+    },
+  });
