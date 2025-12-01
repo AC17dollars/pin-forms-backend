@@ -1,5 +1,6 @@
 import { z } from "@hono/zod-openapi";
 import type { FieldTypeEnum } from "../template/template.schema.js";
+import { ObjectId } from "mongodb";
 
 const coerceLatitude = z.preprocess(
   (val) => (typeof val === "string" ? Number(val) : val),
@@ -91,8 +92,10 @@ export const createDynamicSchema = (
 
 export const FormResponseSchema = z
   .object({
-    id: z.string(),
-    templateId: z.string(),
+    id: z.string().refine((val) => ObjectId.isValid(val), "Invalid ObjectId"),
+    templateId: z
+      .string()
+      .refine((val) => ObjectId.isValid(val), "Invalid ObjectId"),
     data: fixedFields.catchall(z.any()),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime(),

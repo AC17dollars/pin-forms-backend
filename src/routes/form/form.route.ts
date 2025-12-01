@@ -24,7 +24,7 @@ export const createFormRoute = createRoute({
   summary: "Create a new Form",
   description: "Submit a new form based on a template.",
   middleware: [betterAuthSessionMiddleware(auth)] as const,
-  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  security: [{ jwtCookie: [] }] as const,
   request: {
     body: {
       content: {
@@ -62,6 +62,11 @@ export const createFormRoute = createRoute({
     },
     404: {
       description: "Template not found",
+      content: {
+        "application/json": {
+          schema: InternalServerErrorSchema,
+        },
+      },
     },
     500: {
       description: "Internal Server Error",

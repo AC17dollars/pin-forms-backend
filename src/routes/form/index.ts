@@ -10,6 +10,7 @@ import {
 import { createDynamicSchema, FormResponseSchema } from "./form.schema.js";
 import { db } from "@/db/mongo.js";
 import { cLogger } from "@/utils/logger.js";
+import { ObjectId } from "mongodb";
 
 const app = new OpenAPIHono();
 
@@ -26,7 +27,7 @@ app.openapi(createFormRoute, async (c) => {
       .collection("templates")
       .findOne({ _id: new ObjectId(templateId) });
   } catch (_error) {
-    return c.json({ error: "Invalid Template ID" }, 400);
+    return c.json({ error: "Invalid Template ID" }, 404);
   }
 
   if (!template) {
@@ -44,8 +45,12 @@ app.openapi(createFormRoute, async (c) => {
   if (!validationResult.success) {
     return c.json(
       {
-        error: "ValidationError",
-        issues: validationResult.error.issues,
+        error: "ValidationError" as const,
+        issues: validationResult.error.issues.map((issue) => ({
+          code: String(issue.code),
+          path: issue.path.filter((p): p is string | number => p !== null),
+          message: issue.message,
+        })),
       },
       400
     );
@@ -62,7 +67,7 @@ app.openapi(createFormRoute, async (c) => {
   );
 
   const newForm = {
-    templateId: templateId,
+    templateId: new ObjectId(templateId),
     data: validationResult.data as z.output<typeof FormResponseSchema>["data"],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -72,6 +77,7 @@ app.openapi(createFormRoute, async (c) => {
     const result = await db.collection("forms").insertOne(newForm);
     const insertedObj = {
       ...newForm,
+      templateId: templateId.toString(),
       id: result.insertedId.toString(),
     } as z.infer<typeof FormResponseSchema> & { _id?: unknown };
     return c.json((({ _id, ...rest }) => rest)(insertedObj), 201);
@@ -87,6 +93,7 @@ app.openapi(listFormsRoute, async (c) => {
     const result = forms.map(({ _id, ...rest }) => ({
       ...rest,
       id: _id.toString(),
+      templateId: _id.toString(),
     }));
     return c.json(result, 200);
   } catch (_error) {

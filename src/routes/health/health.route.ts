@@ -30,7 +30,7 @@ export const healthAuthRoute = createRoute({
   path: "/auth",
   description: "Check for the health of the service and database connection",
   summary: "of the service with authentication",
-  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  security: [{ jwtCookie: [] }] as const,
   middleware: [betterAuthSessionMiddleware(auth)] as const,
   responses: {
     200: {

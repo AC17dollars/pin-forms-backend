@@ -21,15 +21,15 @@ export function betterAuthSessionMiddleware(auth: Auth) {
       } else {
         c.set("user", null);
         c.set("session", null);
-        // return c.json(
-        //   { message: "Unauthorized! Please provide a valid token" },
-        //   401
-        // );
+        return c.json(
+          { message: "Unauthorized! Please provide a valid token" },
+          401
+        );
       }
     } catch {
       c.set("user", null);
       c.set("session", null);
-      // return c.json({ error: "Internal Server Error" }, 500);
+      return c.json({ error: "Internal Server Error" }, 500);
     }
 
     await next();

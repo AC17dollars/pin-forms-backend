@@ -1,7 +1,7 @@
 import { serve } from "@hono/node-server";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { logger } from "hono/logger";
-import { cors } from "hono/cors";
+// import { cors } from "hono/cors";
 import { Scalar } from "@scalar/hono-api-reference";
 import { cLogger } from "@/utils/logger.js";
 import env from "@/utils/env.js";
@@ -26,7 +26,7 @@ const api = new OpenAPIHono();
 // Middlewares
 cLogger.debug("Adding middlewares to the base app...");
 app.use(logger(cLogger.info));
-app.use(cors({ origin: "*" }));
+// app.use(cors({ origin: "*" }));
 app.get("/", (c) => {
   return c.redirect("/scalar");
 });

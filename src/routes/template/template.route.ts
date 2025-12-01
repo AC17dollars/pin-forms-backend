@@ -24,7 +24,7 @@ export const createTemplateRoute = createRoute({
   description:
     "Create a map-based form template with dynamic fields. The 'place' field is added automatically.",
   middleware: [betterAuthSessionMiddleware(auth)] as const,
-  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  security: [{ jwtCookie: [] }] as const,
   request: {
     body: {
       content: {
@@ -79,7 +79,7 @@ export const listTemplatesRoute = createRoute({
   summary: "List Templates",
   description: "Retrieve all created templates.",
   middleware: [betterAuthSessionMiddleware(auth)] as const,
-  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  security: [{ jwtCookie: [] }] as const,
   responses: {
     200: {
       description: "List of templates",
@@ -118,7 +118,7 @@ export const deleteTemplateRoute = createRoute({
   summary: "Delete a Template",
   description: "Delete a template by ID.",
   middleware: [betterAuthSessionMiddleware(auth)] as const,
-  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  security: [{ jwtCookie: [] }] as const,
   request: {
     params: DeleteTemplateParamSchema,
   },

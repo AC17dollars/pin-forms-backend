@@ -1,4 +1,5 @@
 import { z } from "@hono/zod-openapi";
+import { ObjectId } from "mongodb";
 
 export const FieldTypeEnum = z.enum([
   "string",
@@ -71,7 +72,7 @@ export const FixedFieldSchema = z.object({
 
 export const TemplateResponseSchema = z
   .object({
-    id: z.string(),
+    id: z.string().refine((val) => ObjectId.isValid(val), "Invalid ObjectId"),
     name: z.string(),
     description: z.string().optional(),
     markerIcon: z.string(),
