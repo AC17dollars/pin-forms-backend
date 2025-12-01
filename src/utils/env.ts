@@ -9,6 +9,10 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(1),
   BETTER_AUTH_SECRET: z.string().min(1),
   BETTER_AUTH_URL: z.url(),
+  SMTP_SERVICE: z.string().min(1),
+  SMTP_USER: z.email(),
+  SMTP_PASSWORD: z.string().min(1),
+  SMTP_FROM: z.email(),
 });
 
 export type Env = z.infer<typeof envSchema>;
