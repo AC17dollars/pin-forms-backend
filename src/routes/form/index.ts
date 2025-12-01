@@ -90,11 +90,11 @@ app.openapi(listFormsRoute, async (c) => {
   try {
     const forms = await db.collection("forms").find().toArray();
     if (forms.length === 0) return c.body(null, 204);
-    const result = forms.map(({ _id, ...rest }) => ({
+    const result = forms.map(({ _id, templateId, ...rest }) => ({
       ...rest,
       id: _id.toString(),
-      templateId: _id.toString(),
-    }));
+      templateId: templateId.toString() as string,
+    })) as z.infer<typeof FormResponseSchema>[];
     return c.json(result, 200);
   } catch (_error) {
     return c.json({ error: "Failed to list forms" }, 500);
