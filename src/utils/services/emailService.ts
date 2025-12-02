@@ -14,7 +14,7 @@ export async function sendMagicLinkEmail(email: string, url: string) {
   await transporter.sendMail({
     from: env.SMTP_FROM,
     to: email,
-    subject: "Your Magic Link - Sign In",
+    subject: "Pins Form Map | Sign in to your account",
     html: emailTemplate
       .replaceAll("{{url}}", url)
       .replaceAll("{{current_year}}", currentYear.toString()),
