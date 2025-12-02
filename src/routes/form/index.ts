@@ -11,6 +11,7 @@ import { createDynamicSchema, FormResponseSchema } from "./form.schema.js";
 import { db } from "@/db/mongo.js";
 import { cLogger } from "@/utils/logger.js";
 import { ObjectId } from "mongodb";
+import type { Form, Template } from "@/db/types/db.js";
 
 const app = new OpenAPIHono();
 
@@ -24,7 +25,7 @@ app.openapi(createFormRoute, async (c) => {
   try {
     const { ObjectId } = await import("mongodb");
     template = await db
-      .collection("templates")
+      .collection<Template>("templates")
       .findOne({ _id: new ObjectId(templateId) });
   } catch (_error) {
     return c.json({ error: "Invalid Template ID" }, 404);
@@ -74,13 +75,13 @@ app.openapi(createFormRoute, async (c) => {
   };
 
   try {
-    const result = await db.collection("forms").insertOne(newForm);
+    const result = await db.collection<Form>("forms").insertOne(newForm);
     const insertedObj = {
       ...newForm,
       templateId: templateId.toString(),
       id: result.insertedId.toString(),
-    } as z.infer<typeof FormResponseSchema> & { _id?: unknown };
-    return c.json((({ _id, ...rest }) => rest)(insertedObj), 201);
+    };
+    return c.json(insertedObj, 201);
   } catch (_error) {
     return c.json({ error: "Failed to create form" }, 500);
   }
@@ -88,13 +89,13 @@ app.openapi(createFormRoute, async (c) => {
 
 app.openapi(listFormsRoute, async (c) => {
   try {
-    const forms = await db.collection("forms").find().toArray();
+    const forms = await db.collection<Form>("forms").find().toArray();
     if (forms.length === 0) return c.body(null, 204);
     const result = forms.map(({ _id, templateId, ...rest }) => ({
       ...rest,
       id: _id.toString(),
-      templateId: templateId.toString() as string,
-    })) as z.infer<typeof FormResponseSchema>[];
+      templateId: templateId.toString(),
+    }));
     return c.json(result, 200);
   } catch (_error) {
     return c.json({ error: "Failed to list forms" }, 500);
@@ -109,11 +110,9 @@ app.openapi(updateFormRoute, async (c) => {
     const { ObjectId } = await import("mongodb");
 
     // Get existing form to validate against template
-    const existingForm = (await db
-      .collection("forms")
-      .findOne({ _id: new ObjectId(id) })) as z.infer<
-      typeof FormResponseSchema
-    > & { _id?: unknown };
+    const existingForm = await db
+      .collection<Form>("forms")
+      .findOne({ _id: new ObjectId(id) });
 
     if (!existingForm) {
       return c.json({ error: "Form not found" }, 404);
@@ -123,7 +122,7 @@ app.openapi(updateFormRoute, async (c) => {
 
     // Get template for validation
     const template = await db
-      .collection("templates")
+      .collection<Template>("templates")
       .findOne({ _id: new ObjectId(existingForm.templateId) });
 
     cLogger.info("Template: ", template);
@@ -159,7 +158,7 @@ app.openapi(updateFormRoute, async (c) => {
     };
 
     const result = await db
-      .collection("forms")
+      .collection<Form>("forms")
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: updateData },
@@ -173,7 +172,8 @@ app.openapi(updateFormRoute, async (c) => {
     const updatedForm = {
       ...result,
       id: result._id.toString(),
-    } as z.infer<typeof FormResponseSchema> & { _id?: unknown };
+      templateId: result.templateId.toString(),
+    };
     return c.json((({ _id, ...rest }) => rest)(updatedForm), 200);
   } catch (_error) {
     return c.json({ error: "Failed to update form" }, 500);
@@ -187,7 +187,7 @@ app.openapi(deleteFormRoute, async (c) => {
   try {
     const { ObjectId } = await import("mongodb");
     const result = await db
-      .collection("forms")
+      .collection<Form>("forms")
       .deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
