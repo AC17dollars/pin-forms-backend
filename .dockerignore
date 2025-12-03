@@ -13,7 +13,6 @@ storage
 *.swo
 *~
 .git
-.gitignore
 README.md
 .prettierrc
 .eslintrc
