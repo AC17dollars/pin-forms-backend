@@ -1,6 +1,7 @@
 node_modules
 dist
 npm-debug.log*
+package-lock.json
 .env
 .env.local
 .env.*.local
@@ -16,9 +17,6 @@ storage
 README.md
 .prettierrc
 .eslintrc
-tsconfig.json
-vitest.config.ts
-src
 tests
 *.test.ts
 *.spec.ts
