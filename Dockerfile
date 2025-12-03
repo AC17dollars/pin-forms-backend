@@ -8,6 +8,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml tsconfig.json prettier.config.ts vitest.config.ts eslint.config.ts ./
+COPY .env.docker .env
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -28,6 +29,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
+COPY .env.docker .env
 
 # Install production dependencies only
 RUN pnpm install --prod --frozen-lockfile
