@@ -57,5 +57,8 @@ export default defineConfig([
     language: "markdown/gfm",
     extends: ["markdown/recommended"],
   },
+  {
+    ignores: ["**/package-lock.json", "**/pnpm-lock.yaml", "**/yarn.lock"],
+  },
   eslintConfigPrettier,
 ]);
