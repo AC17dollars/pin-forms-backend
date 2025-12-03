@@ -19,6 +19,7 @@ export interface Template {
 export interface Form {
   _id?: ObjectId;
   templateId: ObjectId;
+  status: "created" | "ongoing" | "completed";
   data: {
     place: {
       lat: number;

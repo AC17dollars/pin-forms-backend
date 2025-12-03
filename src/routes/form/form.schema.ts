@@ -26,14 +26,16 @@ const fixedFormFieldsShape = {
 export const CreateFormSchema = z
   .object({
     templateId: z.string(),
+    status: z.enum(["created", "ongoing", "completed"]),
     ...fixedFormFieldsShape,
   })
   .loose()
   .openapi("CreateFormSchema", {
     example: {
       templateId: "692311b79482546758159437",
-      "place.lat": 51.5074,
-      "place.lng": -0.1278,
+      status: "created",
+      "place.lat": 28.37815103522934,
+      "place.lng": 85.05658285242515,
     },
   });
 
@@ -57,12 +59,13 @@ export const createDynamicSchema = (
   for (const field of fields) {
     let validator;
     switch (field.type) {
-      case "string":
+      case "text":
         validator = z.string();
         break;
       case "image":
       case "document":
-        validator = z.file();
+        // In Hono/node, uploaded files are often File objects (from web standard)
+        validator = z.instanceof(File).or(z.any());
         break;
       case "number":
         validator = z.coerce.number();
@@ -78,6 +81,9 @@ export const createDynamicSchema = (
           lat: z.coerce.number().min(-90).max(90),
           lng: z.coerce.number().min(-180).max(180),
         });
+        break;
+      case "link":
+        validator = z.string().url();
         break;
       default:
         validator = z.any();
@@ -96,6 +102,7 @@ export const FormResponseSchema = z
     templateId: z
       .string()
       .refine((val) => ObjectId.isValid(val), "Invalid ObjectId"),
+    status: z.enum(["created", "ongoing", "completed"]),
     data: fixedFields.catchall(z.any()),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime(),
@@ -111,6 +118,7 @@ export const DeleteFormParamSchema = z.object({
 export const UpdateFormSchema = z
   .object({
     ...fixedFormFieldsShape,
+    status: z.enum(["created", "ongoing", "completed"]),
   })
   .loose()
   .openapi("UpdateFormSchema", {

@@ -7,13 +7,14 @@ import { cLogger } from "@/utils/logger.js";
 import env from "@/utils/env.js";
 
 import { auth } from "@/utils/better-auth.js";
-import { connectDB, disconnectDB } from "@/db/mongo.js";
+import { connectDB, disconnectDB } from "@/db/connection.js";
 import { getLocalIPs } from "@/utils/ip-address.js";
 
 // Import other routes apps
 import healthApp from "@/routes/health/index.js";
 import templateApp from "@/routes/template/index.js";
 import formApp from "@/routes/form/index.js";
+import fileApp from "@/routes/file/index.js";
 
 // Main Hono instance
 cLogger.debug("Creating the base OpenAPIHono app...");
@@ -40,6 +41,7 @@ api.on(["POST", "GET"], "/auth/*", (c) => {
 api.route("/health", healthApp);
 api.route("/template", templateApp);
 api.route("/form", formApp);
+api.route("/files", fileApp);
 
 // Use /api prefix for all routes
 cLogger.debug("Adding API routes to the base app...");
@@ -109,27 +111,29 @@ connectDB()
   });
 
 // Node server
-cLogger.debug("Starting the server...");
-serve(
-  {
-    fetch: app.fetch,
-    port: env.PORT,
-  },
-  (info) => {
-    cLogger.info("Server started successfully");
-    cLogger.debug("Local Servers:");
-    cLogger.info(`🌐 Server @\x1b[34mhttp://localhost:${info.port}\x1b[0m`);
-    cLogger.info(`🌐 Server @\x1b[34mhttp://127.0.0.1:${info.port}\x1b[0m`);
-    cLogger.info(`🌐 Server @\x1b[34mhttp://[::1]:${info.port}\x1b[0m\n`);
-    cLogger.debug("External Servers:");
-    localIP.ipv4.forEach((ip) => {
-      cLogger.info(`🌐 Server @\x1b[34mhttp://${ip}:${info.port}\x1b[0m`);
-    });
-    localIP.ipv6.forEach((ip) => {
-      cLogger.info(`🌐 Server @\x1b[34mhttp://[${ip}]:${info.port}\x1b[0m`);
-    });
-  }
-);
+if (env.NODE_ENV !== "test") {
+  cLogger.debug("Starting the server...");
+  serve(
+    {
+      fetch: app.fetch,
+      port: env.PORT,
+    },
+    (info) => {
+      cLogger.info("Server started successfully");
+      cLogger.debug("Local Servers:");
+      cLogger.info(`🌐 Server @\x1b[34mhttp://localhost:${info.port}\x1b[0m`);
+      cLogger.info(`🌐 Server @\x1b[34mhttp://127.0.0.1:${info.port}\x1b[0m`);
+      cLogger.info(`🌐 Server @\x1b[34mhttp://[::1]:${info.port}\x1b[0m\n`);
+      cLogger.debug("External Servers:");
+      localIP.ipv4.forEach((ip) => {
+        cLogger.info(`🌐 Server @\x1b[34mhttp://${ip}:${info.port}\x1b[0m`);
+      });
+      localIP.ipv6.forEach((ip) => {
+        cLogger.info(`🌐 Server @\x1b[34mhttp://[${ip}]:${info.port}\x1b[0m`);
+      });
+    }
+  );
+}
 
 // Shutdown gracefully
 process.on("SIGINT", async () => {
@@ -145,3 +149,5 @@ process.on("SIGTERM", async () => {
   await disconnectDB();
   process.exit(0);
 });
+
+export default app;

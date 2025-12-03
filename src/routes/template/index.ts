@@ -7,8 +7,8 @@ import {
 
 import { TemplateResponseSchema } from "./template.schema.js";
 
-import { db } from "@/db/mongo.js";
-import type { Template } from "@/db/types/db.js";
+import { db } from "@/db/connection.js";
+import type { Template } from "@/types/db.js";
 
 const app = new OpenAPIHono();
 

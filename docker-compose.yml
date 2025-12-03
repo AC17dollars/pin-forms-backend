@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:7.0
+    container_name: gis-form-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-changeme}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - gis-form-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gis-form-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGO_URI: mongodb://${MONGO_ROOT_USERNAME:-admin}:${MONGO_ROOT_PASSWORD:-changeme}@mongodb:27017/gis-forms?authSource=admin
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:5000}
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - gis-form-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  gis-form-network:
+    driver: bridge

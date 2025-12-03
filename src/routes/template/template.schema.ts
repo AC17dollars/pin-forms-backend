@@ -2,13 +2,14 @@ import { z } from "@hono/zod-openapi";
 import { ObjectId } from "mongodb";
 
 export const FieldTypeEnum = z.enum([
-  "string",
+  "text",
   "number",
   "date",
   "time",
   "image",
   "document",
   "place",
+  "link",
 ]);
 
 export const TemplateFieldSchema = z
@@ -43,13 +44,13 @@ export const CreateTemplateSchema = z
         {
           key: "name",
           label: "Name",
-          type: "string",
+          type: "text",
           required: true,
         },
         {
           key: "description",
           label: "Description",
-          type: "string",
+          type: "text",
           required: false,
         },
         {

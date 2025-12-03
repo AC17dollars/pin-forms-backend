@@ -4,12 +4,13 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc && tsc-alias",
-    "prebuild": "pnpm run eslint && pnpm run prettier",
+    "prebuild": "pnpm run prettier && pnpm run eslint && pnpm run test",
     "start": "node dist/index.js",
     "eslint": "eslint .",
     "eslint:fix": "eslint . --fix",
     "prettier": "prettier . --write",
-    "prettier:check": "prettier . --check"
+    "prettier:check": "prettier . --check",
+    "test": "vitest run ."
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",
@@ -19,7 +20,8 @@
     "dotenv": "^17.2.3",
     "hono": "^4.10.6",
     "mongodb": "^7.0.0",
-    "nodemailer": "^7.0.11"
+    "nodemailer": "^7.0.11",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.0",
@@ -28,6 +30,7 @@
     "@eslint/markdown": "^7.5.1",
     "@types/node": "^20.19.25",
     "@types/nodemailer": "^7.0.4",
+    "@types/uuid": "^11.0.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.5.0",
@@ -36,6 +39,7 @@
     "tsc-alias": "^1.8.16",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.47.0"
+    "typescript-eslint": "^8.47.0",
+    "vitest": "^4.0.14"
   }
 }

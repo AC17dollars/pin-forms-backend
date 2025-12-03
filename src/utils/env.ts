@@ -2,14 +2,19 @@ import { z } from "@hono/zod-openapi";
 import "dotenv/config";
 
 const envSchema = z.object({
-  NODE_ENV: z.union([z.literal("production"), z.literal("development")]),
+  NODE_ENV: z.union([
+    z.literal("production"),
+    z.literal("development"),
+    z.literal("test"),
+  ]),
   MONGO_URI: z.url(),
   DB_NAME: z.string().min(1),
   PORT: z.coerce.number().min(1).max(65535).default(3000),
   JWT_SECRET: z.string().min(1),
   BETTER_AUTH_SECRET: z.string().min(1),
   BETTER_AUTH_URL: z.url(),
-  SMTP_SERVICE: z.string().min(1),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.coerce.number().min(1).max(65535).default(587),
   SMTP_USER: z.email(),
   SMTP_PASSWORD: z.string().min(1),
   SMTP_FROM: z.email(),

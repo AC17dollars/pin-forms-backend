@@ -3,7 +3,7 @@ import { healthRoute, healthAuthRoute } from "./health.route.js";
 
 const app = new OpenAPIHono();
 
-import { db } from "@/db/mongo.js";
+import { db } from "@/db/connection.js";
 import { cLogger } from "@/utils/logger.js";
 
 app.openapi(healthRoute, async (c) => {

@@ -1,4 +1,4 @@
-import { createRoute } from "@hono/zod-openapi";
+import { createRoute, z } from "@hono/zod-openapi";
 import {
   CreateFormSchema,
   FormListSchema,
@@ -87,6 +87,52 @@ export const listFormsRoute = createRoute({
   description: "Retrieve all submitted forms.",
   middleware: [betterAuthSessionMiddleware(auth)] as const,
   security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  responses: {
+    200: {
+      description: "List of forms",
+      content: {
+        "application/json": {
+          schema: FormListSchema,
+        },
+      },
+    },
+    204: {
+      description: "No forms found",
+    },
+    401: {
+      description: "Unauthorized",
+      content: {
+        "application/json": {
+          schema: UnauthorizedSchema,
+        },
+      },
+    },
+    500: {
+      description: "Internal Server Error",
+      content: {
+        "application/json": {
+          schema: InternalServerErrorSchema,
+        },
+      },
+    },
+  },
+});
+
+export const getFormsByTemplateRoute = createRoute({
+  tags: ["Forms"],
+  method: "get",
+  path: "/template/{templateId}",
+  summary: "Get Forms by Template ID",
+  description: "Retrieve all forms submitted for a specific template.",
+  middleware: [betterAuthSessionMiddleware(auth)] as const,
+  security: [{ jwtHeader: [] }, { jwtCookie: [] }] as const,
+  request: {
+    params: z.object({
+      templateId: z
+        .string()
+        .openapi({ param: { name: "templateId", in: "path" } }),
+    }),
+  },
   responses: {
     200: {
       description: "List of forms",

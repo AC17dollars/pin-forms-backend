@@ -1,8 +1,8 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { db } from "@/db/mongo.js";
+import { db } from "@/db/connection.js";
 import { magicLink, openAPI } from "better-auth/plugins";
-import { sendMagicLinkEmail } from "@/utils/services/emailService.js";
+import { sendMagicLinkEmail } from "@/services/email.service.js";
 import env from "./env.js";
 
 export const auth = betterAuth({
